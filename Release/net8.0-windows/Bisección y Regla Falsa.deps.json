@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Bisección y Regla Falsa/1.0.0": {
+        "runtime": {
+          "Bisección y Regla Falsa.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Bisección y Regla Falsa/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
