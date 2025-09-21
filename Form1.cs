@@ -1,4 +1,7 @@
 using System.Globalization;
+using Microsoft.VisualBasic;
+using System.Linq;   
+
 
 namespace Bisección_y_Regla_Falsa
 {
@@ -20,246 +23,131 @@ namespace Bisección_y_Regla_Falsa
 
         private void ConfigurarEstilos()
         {
-            // Configuración general del formulario
             this.BackColor = Color.FromArgb(240, 244, 248);
-            this.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            this.Font = new Font("Segoe UI", 9F);
 
-            // Estilo de botones
-            ConfigurarBoton(btnBiseccion, Color.FromArgb(59, 130, 246), "Método de Bisección");
-            ConfigurarBoton(btnReglaFalsa, Color.FromArgb(16, 185, 129), "Método de Regla Falsa");
-            ConfigurarBoton(btnLimpiar, Color.FromArgb(239, 68, 68), "Limpiar Tabla");
+            ConfigurarBoton(btnBiseccion, Color.FromArgb(59, 130, 246));
+            ConfigurarBoton(btnReglaFalsa, Color.FromArgb(16, 185, 129));
+            ConfigurarBoton(btnNewton, Color.FromArgb(99, 102, 241));
+            ConfigurarBoton(btnSecante, Color.FromArgb(234, 179, 8));
+            ConfigurarBoton(btnMostrarMetodos, Color.FromArgb(15, 118, 110));
+            ConfigurarBoton(btnLimpiar, Color.FromArgb(239, 68, 68));
 
-            // Estilo del DataGridView
             ConfigurarDataGridView();
-
-            // Estilo de los TextBox y Labels
-            ConfigurarControlesEntrada();
-
-            // Estilo del ComboBox
-            ConfigurarComboBox();
         }
 
-        private void ConfigurarBoton(Button btn, Color colorFondo, string tooltip = "")
+        private void ConfigurarBoton(Button btn, Color color)
         {
-            btn.BackColor = colorFondo;
+            btn.BackColor = color;
             btn.ForeColor = Color.White;
             btn.FlatStyle = FlatStyle.Flat;
             btn.FlatAppearance.BorderSize = 0;
-            btn.FlatAppearance.MouseOverBackColor = AjustarBrillo(colorFondo, -0.1f);
-            btn.FlatAppearance.MouseDownBackColor = AjustarBrillo(colorFondo, -0.2f);
+            btn.FlatAppearance.MouseOverBackColor = AjustarBrillo(color, -0.1f);
+            btn.FlatAppearance.MouseDownBackColor = AjustarBrillo(color, -0.2f);
             btn.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btn.Cursor = Cursors.Hand;
-            btn.Height = 35;
+        }
 
-            // Agregar efecto hover
-            btn.MouseEnter += (s, e) => {
-                btn.BackColor = AjustarBrillo(colorFondo, -0.1f);
-            };
-            btn.MouseLeave += (s, e) => {
-                btn.BackColor = colorFondo;
-            };
-
-            if (!string.IsNullOrEmpty(tooltip))
-            {
-                ToolTip toolTip = new ToolTip();
-                toolTip.SetToolTip(btn, tooltip);
-            }
+        private static Color AjustarBrillo(Color c, float factor)
+        {
+            int r = Math.Max(0, Math.Min(255, (int)(c.R * (1 + factor))));
+            int g = Math.Max(0, Math.Min(255, (int)(c.G * (1 + factor))));
+            int b = Math.Max(0, Math.Min(255, (int)(c.B * (1 + factor))));
+            return Color.FromArgb(r, g, b);
         }
 
         private void ConfigurarDataGridView()
         {
-            // Estilo general
-            gridIter.BackgroundColor = Color.White;
-            gridIter.BorderStyle = BorderStyle.None;
-            gridIter.CellBorderStyle = DataGridViewCellBorderStyle.None;
-            gridIter.EnableHeadersVisualStyles = false;
-            gridIter.GridColor = Color.FromArgb(226, 232, 240);
-            gridIter.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            gridIter.MultiSelect = false;
             gridIter.ReadOnly = true;
             gridIter.AllowUserToAddRows = false;
             gridIter.AllowUserToDeleteRows = false;
-            gridIter.AllowUserToResizeRows = false;
             gridIter.RowHeadersVisible = false;
+            gridIter.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-            // Estilo de encabezados
             gridIter.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(51, 65, 85);
             gridIter.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            gridIter.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            gridIter.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            gridIter.ColumnHeadersHeight = 40;
+            gridIter.EnableHeadersVisualStyles = false;
 
-            // Estilo de celdas
-            gridIter.DefaultCellStyle.BackColor = Color.White;
-            gridIter.DefaultCellStyle.ForeColor = Color.FromArgb(51, 65, 85);
-            gridIter.DefaultCellStyle.Font = new Font("Consolas", 9F);
-            gridIter.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            gridIter.DefaultCellStyle.Padding = new Padding(5);
-            gridIter.RowTemplate.Height = 30;
-
-            // Estilo de filas alternadas
-            gridIter.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
-
-            // Estilo de selección
-            gridIter.DefaultCellStyle.SelectionBackColor = Color.FromArgb(59, 130, 246);
-            gridIter.DefaultCellStyle.SelectionForeColor = Color.White;
-
-            // Configurar columnas si existen
-            if (gridIter.Columns.Count > 0)
-            {
-                foreach (DataGridViewColumn col in gridIter.Columns)
-                {
-                    col.SortMode = DataGridViewColumnSortMode.NotSortable;
-                }
-            }
+            foreach (DataGridViewColumn col in gridIter.Columns)
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
         }
 
-        private void ConfigurarControlesEntrada()
-        {
-            // Buscar todos los TextBox y Labels en el formulario
-            foreach (Control control in this.Controls)
-            {
-                if (control is TextBox txt)
-                {
-                    ConfigurarTextBox(txt);
-                }
-                else if (control is Label lbl)
-                {
-                    ConfigurarLabel(lbl);
-                }
-
-                // Buscar en contenedores anidados (GroupBox, Panel, etc.)
-                ConfigurarControlesEnContenedor(control);
-            }
-        }
-
-        private void ConfigurarControlesEnContenedor(Control contenedor)
-        {
-            foreach (Control control in contenedor.Controls)
-            {
-                if (control is TextBox txt)
-                {
-                    ConfigurarTextBox(txt);
-                }
-                else if (control is Label lbl)
-                {
-                    ConfigurarLabel(lbl);
-                }
-                else if (control.HasChildren)
-                {
-                    ConfigurarControlesEnContenedor(control);
-                }
-            }
-        }
-
-        private void ConfigurarTextBox(TextBox txt)
-        {
-            txt.BorderStyle = BorderStyle.FixedSingle;
-            txt.BackColor = Color.White;
-            txt.ForeColor = Color.FromArgb(51, 65, 85);
-            txt.Font = new Font("Segoe UI", 9F);
-            txt.Height = 25;
-
-            // Agregar efectos de focus
-            txt.Enter += (s, e) => {
-                txt.BackColor = Color.FromArgb(239, 246, 255);
-            };
-            txt.Leave += (s, e) => {
-                txt.BackColor = Color.White;
-            };
-        }
-
-        private void ConfigurarLabel(Label lbl)
-        {
-            lbl.ForeColor = Color.FromArgb(71, 85, 105);
-            lbl.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
-        }
-
-        private void ConfigurarComboBox()
-        {
-            // Buscar el ComboBox en el formulario
-            var cmb = this.Controls.OfType<ComboBox>().FirstOrDefault();
-            if (cmb == null)
-            {
-                // Buscar en contenedores anidados
-                cmb = BuscarComboBoxEnContenedores(this);
-            }
-
-            if (cmb != null)
-            {
-                cmb.FlatStyle = FlatStyle.Flat;
-                cmb.BackColor = Color.White;
-                cmb.ForeColor = Color.FromArgb(51, 65, 85);
-                cmb.Font = new Font("Segoe UI", 9F);
-                cmb.DropDownStyle = ComboBoxStyle.DropDownList;
-            }
-        }
-
-        private ComboBox BuscarComboBoxEnContenedores(Control contenedor)
-        {
-            foreach (Control control in contenedor.Controls)
-            {
-                if (control is ComboBox cmb)
-                    return cmb;
-
-                if (control.HasChildren)
-                {
-                    var resultado = BuscarComboBoxEnContenedores(control);
-                    if (resultado != null)
-                        return resultado;
-                }
-            }
-            return null;
-        }
-
-        private Color AjustarBrillo(Color color, float factor)
-        {
-            int r = Math.Max(0, Math.Min(255, (int)(color.R * (1 + factor))));
-            int g = Math.Max(0, Math.Min(255, (int)(color.G * (1 + factor))));
-            int b = Math.Max(0, Math.Min(255, (int)(color.B * (1 + factor))));
-            return Color.FromArgb(r, g, b);
-        }
-
+        // ===============================
+        // Eventos
+        // ===============================
         private void HookEvents()
         {
             btnBiseccion.Click += (s, e) => Ejecutar("biseccion");
             btnReglaFalsa.Click += (s, e) => Ejecutar("reglaFalsa");
-            btnLimpiar.Click += (s, e) => {
-                gridIter.Rows.Clear();
-                // Agregar animación de limpieza
-                this.Refresh();
-            };
+            btnNewton.Click += (s, e) => Ejecutar("newton");
+            btnSecante.Click += (s, e) => Ejecutar("secante");
+
+            btnMostrarMetodos.Click += (s, e) => MostrarComparativa();
+
+            btnLimpiar.Click += (s, e) => { gridIter.Rows.Clear(); gridIter.Refresh(); };
+
+            // llenar combo al cambiar selección con valores sugeridos
+            cmbFuncion.SelectedIndexChanged += (s, e) => CargarSugerencias();
         }
 
         private void ValoresIniciales()
         {
-            txtXi.Text = "0.0";
-            txtXf.Text = "1.0";
-            txtEamax.Text = "0.1"; // 0.1% (en porcentaje)
+            // Cargar funciones desde la biblioteca de 5 funciones
+            cmbFuncion.Items.Clear();
+            foreach (var def in FunctionLibrary.ListFunction)
+                cmbFuncion.Items.Add(def); // ToString() devuelve Name
+
+            cmbFuncion.SelectedIndex = 0;
+            txtEamax.Text = "0.1";  // 0.1%
+
+            CargarSugerencias();
         }
 
+        private void CargarSugerencias()
+        {
+            if (cmbFuncion.SelectedItem is FunctionDef def && def.Bracket is not null)
+            {
+                txtXi.Text = def.Bracket.Value.xi.ToString("0.####", CultureInfo.InvariantCulture);
+                txtXf.Text = def.Bracket.Value.xf.ToString("0.####", CultureInfo.InvariantCulture);
+            }
+        }
+
+        // ===============================
+        // Lógica de ejecución
+        // ===============================
         private void Ejecutar(string metodo)
         {
             try
             {
-                // Validar entrada con mejor feedback visual
                 if (!ValidarEntradas(out double xi, out double xf, out double eamax))
-                {
                     return;
-                }
 
-                // Mostrar indicador de carga
                 this.Cursor = Cursors.WaitCursor;
 
-                var f = SeleccionarFuncion();
-                double raiz = (metodo == "biseccion")
-                    ? _rf.Biseccion(f, xi, xf, eamax)
-                    : _rf.ReglaFalsa(f, xi, xf, eamax);
+                var (f, df, _) = SeleccionarFuncion();
+                double raiz;
+
+                switch (metodo)
+                {
+                    case "biseccion":
+                        raiz = _rf.Biseccion(f, xi, xf, eamax);
+                        break;
+                    case "reglaFalsa":
+                        raiz = _rf.ReglaFalsa(f, xi, xf, eamax);
+                        break;
+                    case "newton":
+                        if (df is null) throw new Exception("La función no tiene derivada disponible para Newton.");
+                        raiz = _rf.NewtonRaphson(f, df, xi, eamax); // xi = x0
+                        break;
+                    case "secante":
+                        raiz = _rf.Secante(f, xi, xf, eamax); // xi=x0, xf=x1
+                        break;
+                    default:
+                        throw new NotSupportedException();
+                }
 
                 LlenarGrid();
-
-                // Mostrar mensaje de éxito
-                MostrarResultado(raiz, metodo);
+                MostrarResultado(raiz, metodo, f);
             }
             catch (Exception ex)
             {
@@ -272,56 +160,29 @@ namespace Bisección_y_Regla_Falsa
             }
         }
 
+        private (Func<double, double> f, Func<double, double>? df, string nombre) SeleccionarFuncion()
+        {
+            var def = (FunctionDef)cmbFuncion.SelectedItem!;
+            return (def.f, def.df, def.Name);
+        }
+
         private bool ValidarEntradas(out double xi, out double xf, out double eamax)
         {
             xi = xf = eamax = 0;
 
-            var textBoxes = new[] {
-                (txtXi, "Valor inicial Xi"),
-                (txtXf, "Valor final Xf"),
-                (txtEamax, "Error máximo")
-            };
+            if (!TryParseDouble(txtXi.Text, out xi))
+            { txtXi.BackColor = Color.FromArgb(254, 226, 226); txtXi.Focus(); return false; }
+            txtXi.BackColor = Color.White;
 
-            foreach (var (txt, nombre) in textBoxes)
-            {
-                if (!TryParseDouble(txt.Text, out double valor))
-                {
-                    txt.BackColor = Color.FromArgb(254, 226, 226); // Rojo claro
-                    MessageBox.Show($"El valor de {nombre} no es válido.", "Datos inválidos",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    txt.Focus();
-                    return false;
-                }
-                txt.BackColor = Color.White;
-            }
+            if (!TryParseDouble(txtXf.Text, out xf))
+            { txtXf.BackColor = Color.FromArgb(254, 226, 226); txtXf.Focus(); return false; }
+            txtXf.BackColor = Color.White;
 
-            if (!TryParseDouble(txtXi.Text, out xi) ||
-                !TryParseDouble(txtXf.Text, out xf) ||
-                !TryParseDouble(txtEamax.Text, out eamax))
-            {
-                return false;
-            }
+            if (!TryParseDouble(txtEamax.Text, out eamax))
+            { txtEamax.BackColor = Color.FromArgb(254, 226, 226); txtEamax.Focus(); return false; }
+            txtEamax.BackColor = Color.White;
 
             return true;
-        }
-
-        private void MostrarResultado(double raiz, string metodo)
-        {
-            string nombreMetodo = metodo == "biseccion" ? "Bisección" : "Regla Falsa";
-            string mensaje = $"✓ {nombreMetodo} completado\n" +
-                           $"Raíz encontrada: {raiz:F6}\n" +
-                           $"Iteraciones: {_rf.Iteraciones}\n";
-                           //$"Error final: {(_rf.Tabla.LastOrDefault()?.ea ?? 0):F6}%";
-
-            MessageBox.Show(mensaje, "Cálculo completado",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private Func<double, double> SeleccionarFuncion()
-        {
-            Func<double, double> f = (x) => 4 * Math.Pow(x, 3) - 6 * Math.Pow(x, 2) + 7 * x - 2.3;
-            Func<double, double> g = (x) => Math.Pow(x, 2) * Math.Sqrt(Math.Abs(Math.Cos(x))) - 5;
-            return cmbFuncion.SelectedIndex == 0 ? f : g;
         }
 
         private void LlenarGrid()
@@ -330,22 +191,19 @@ namespace Bisección_y_Regla_Falsa
 
             foreach (var r in _rf.Tabla)
             {
-                var fila = gridIter.Rows.Add(
+                gridIter.Rows.Add(
                     r.i.ToString(),
-                    r.xi.ToString("F6"),
-                    r.xf.ToString("F6"),
+                    double.IsNaN(r.xi) ? "—" : r.xi.ToString("F6"),
+                    double.IsNaN(r.xf) ? "—" : r.xf.ToString("F6"),
                     r.xr.ToString("F6"),
-                    r.fxi.ToString("F6"),
-                    r.fxf.ToString("F6"),
+                    double.IsNaN(r.fxi) ? "—" : r.fxi.ToString("F6"),
+                    double.IsNaN(r.fxf) ? "—" : r.fxf.ToString("F6"),
                     r.fxr.ToString("F6"),
-                    double.IsNaN(r.ea) ? "—" : r.ea.ToString("F2") + "%"
+                    double.IsNaN(r.ea) ? "—" : r.ea.ToString("F4")
                 );
             }
 
-            // Agregar fila de resumen con estilo especial
             AgregarFilaResumen();
-
-            // Auto-ajustar columnas
             gridIter.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
         }
 
@@ -353,23 +211,100 @@ namespace Bisección_y_Regla_Falsa
         {
             if (_rf.Tabla != null && _rf.Tabla.Count > 0)
             {
-                double raiz = _rf.Tabla[_rf.Tabla.Count - 1].xr;
-                double fRaiz = SeleccionarFuncion()(raiz);
+                double raiz = _rf.Tabla[^1].xr;
+                var (f, _, _) = SeleccionarFuncion();
+                double fRaiz = f(raiz);
 
-                // Agregar línea separadora
-                var filaSeparadora = gridIter.Rows.Add("━━━", "━━━━━━", "━━━━━━", "━━━━━━", "━━━━━━", "━━━━━━", "━━━━━━", "━━━━━━");
-                gridIter.Rows[filaSeparadora].DefaultCellStyle.BackColor = Color.FromArgb(226, 232, 240);
-                gridIter.Rows[filaSeparadora].DefaultCellStyle.ForeColor = Color.FromArgb(148, 163, 184);
+                int filaSep = gridIter.Rows.Add("━━━", "━━━━━━", "━━━━━━", "━━━━━━", "━━━━━━", "━━━━━━", "━━━━━━", "━━━━━━");
+                gridIter.Rows[filaSep].DefaultCellStyle.BackColor = Color.FromArgb(226, 232, 240);
+                gridIter.Rows[filaSep].DefaultCellStyle.ForeColor = Color.FromArgb(148, 163, 184);
 
-                // Agregar fila de resultado final
-                var filaFinal = gridIter.Rows.Add("FINAL", "—", "—", raiz.ToString("F6"), "—", "—",
+                int filaFinal = gridIter.Rows.Add("FINAL", "—", "—", raiz.ToString("F6"), "—", "—",
                                                   fRaiz.ToString("F6"), $"{_rf.Iteraciones} iter.");
-
-                // Estilo especial para la fila final
                 gridIter.Rows[filaFinal].DefaultCellStyle.BackColor = Color.FromArgb(34, 197, 94);
                 gridIter.Rows[filaFinal].DefaultCellStyle.ForeColor = Color.White;
                 gridIter.Rows[filaFinal].DefaultCellStyle.Font = new Font("Consolas", 9F, FontStyle.Bold);
             }
+        }
+
+        private void MostrarResultado(double raiz, string metodo, Func<double, double> f)
+        {
+            string nombreMetodo = metodo switch
+            {
+                "biseccion" => "Bisección",
+                "reglaFalsa" => "Regla Falsa",
+                "newton" => "Newton–Raphson",
+                "secante" => "Secante",
+                _ => metodo
+            };
+
+            MessageBox.Show(
+                $"✓ {nombreMetodo}\nRaíz: {raiz:F6}\nf(raíz): {f(raiz):F6}\nIteraciones: {_rf.Iteraciones}",
+                "Cálculo completado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void MostrarComparativa()
+        {
+            if (!ValidarEntradas(out double xi, out double xf, out double eamax)) return;
+
+            var (f, df, _) = SeleccionarFuncion();
+            var rows = new List<(string metodo, int it, double raiz, double y, double ea)>();
+
+            // Bisección
+            double rB = _rf.Biseccion(f, xi, xf, eamax); double eaB = CalcEaFromTabla(_rf.Tabla);
+            rows.Add(("Bisección", _rf.Iteraciones, rB, f(rB), eaB));
+
+            // Regla Falsa
+            double rF = _rf.ReglaFalsa(f, xi, xf, eamax); double eaF = CalcEaFromTabla(_rf.Tabla);
+            rows.Add(("Regla falsa", _rf.Iteraciones, rF, f(rF), eaF));
+
+            // Newton
+            if (df is not null)
+            {
+                double rN = _rf.NewtonRaphson(f, df, xi, eamax); double eaN = CalcEaFromTabla(_rf.Tabla);
+                rows.Add(("Newton - Raphson", _rf.Iteraciones, rN, f(rN), eaN));
+            }
+            else rows.Add(("Newton - Raphson", 0, double.NaN, double.NaN, double.NaN));
+
+            // Secante
+            double rS = _rf.Secante(f, xi, xf, eamax); double eaS = CalcEaFromTabla(_rf.Tabla);
+            rows.Add(("Secante", _rf.Iteraciones, rS, f(rS), eaS));
+
+            using var dlg = new Form
+            {
+                Text = "Comparación de métodos",
+                Size = new Size(720, 320),
+                StartPosition = FormStartPosition.CenterParent,
+                MaximizeBox = false,
+                MinimizeBox = false,
+                ShowInTaskbar = false
+            };
+            var grid = new DataGridView
+            {
+                Dock = DockStyle.Fill,
+                ReadOnly = true,
+                AllowUserToAddRows = false,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+            };
+            grid.DataSource = rows.Select(r => new
+            {
+                Método = r.metodo,
+                Iteraciones = r.it,
+                Raíz = double.IsNaN(r.raiz) ? "—" : r.raiz.ToString("0.0000"),
+                Y_raíz = double.IsNaN(r.y) ? "—" : r.y.ToString("0.0000"),
+                Error_aprox = double.IsNaN(r.ea) ? "—" : r.ea.ToString("0.0000")
+            }).ToList();
+
+            dlg.Controls.Add(grid);
+            dlg.ShowDialog(this);
+        }
+
+        private static double CalcEaFromTabla(
+            List<(int i, double xi, double xf, double xr, double fxi, double fxf, double fxr, double ea)> tabla)
+        {
+            if (tabla == null || tabla.Count == 0) return double.NaN;
+            var last = tabla[^1];          // última fila
+            return double.IsNaN(last.ea) ? 0.0 : last.ea;
         }
 
         private bool TryParseDouble(string s, out double value)
@@ -384,6 +319,11 @@ namespace Bisección_y_Regla_Falsa
         private void lblXf_Click(object sender, EventArgs e)
         {
             // Método vacío mantenido para compatibilidad
+        }
+
+        private void btnReglaFalsa_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

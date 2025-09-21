@@ -48,12 +48,15 @@
             dataGridViewTextBoxColumn6 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn7 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn8 = new DataGridViewTextBoxColumn();
+            btnNewton = new Button();
+            btnSecante = new Button();
+            btnMostrarMetodos = new Button();
             ((System.ComponentModel.ISupportInitialize)gridIter).BeginInit();
             SuspendLayout();
             // 
             // btnLimpiar
             // 
-            btnLimpiar.Location = new Point(49, 454);
+            btnLimpiar.Location = new Point(49, 530);
             btnLimpiar.Name = "btnLimpiar";
             btnLimpiar.Size = new Size(214, 45);
             btnLimpiar.TabIndex = 11;
@@ -125,17 +128,18 @@
             // 
             btnBiseccion.Location = new Point(49, 326);
             btnBiseccion.Name = "btnBiseccion";
-            btnBiseccion.Size = new Size(214, 39);
+            btnBiseccion.Size = new Size(100, 39);
             btnBiseccion.TabIndex = 9;
             btnBiseccion.Text = "Biseccion";
             // 
             // btnReglaFalsa
             // 
-            btnReglaFalsa.Location = new Point(49, 391);
+            btnReglaFalsa.Location = new Point(155, 326);
             btnReglaFalsa.Name = "btnReglaFalsa";
-            btnReglaFalsa.Size = new Size(214, 44);
+            btnReglaFalsa.Size = new Size(100, 39);
             btnReglaFalsa.TabIndex = 10;
             btnReglaFalsa.Text = "Regla Falsa";
+            btnReglaFalsa.Click += btnReglaFalsa_Click;
             // 
             // gridIter
             // 
@@ -203,9 +207,36 @@
             dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
             dataGridViewTextBoxColumn8.Width = 125;
             // 
+            // btnNewton
+            // 
+            btnNewton.Location = new Point(49, 380);
+            btnNewton.Name = "btnNewton";
+            btnNewton.Size = new Size(100, 39);
+            btnNewton.TabIndex = 12;
+            btnNewton.Text = "Newton";
+            // 
+            // btnSecante
+            // 
+            btnSecante.Location = new Point(155, 380);
+            btnSecante.Name = "btnSecante";
+            btnSecante.Size = new Size(100, 39);
+            btnSecante.TabIndex = 13;
+            btnSecante.Text = "Secante";
+            // 
+            // btnMostrarMetodos
+            // 
+            btnMostrarMetodos.Location = new Point(49, 462);
+            btnMostrarMetodos.Name = "btnMostrarMetodos";
+            btnMostrarMetodos.Size = new Size(214, 45);
+            btnMostrarMetodos.TabIndex = 14;
+            btnMostrarMetodos.Text = "Mostrar Todos";
+            // 
             // Form1
             // 
             ClientSize = new Size(1055, 600);
+            Controls.Add(btnMostrarMetodos);
+            Controls.Add(btnSecante);
+            Controls.Add(btnNewton);
             Controls.Add(gridIter);
             Controls.Add(lblFuncion);
             Controls.Add(cmbFuncion);
@@ -218,10 +249,12 @@
             Controls.Add(btnBiseccion);
             Controls.Add(btnReglaFalsa);
             Controls.Add(btnLimpiar);
+            MaximizeBox = false;
+            MinimizeBox = false;
             MinimumSize = new Size(900, 600);
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Raíces (Bisección y Regla Falsa)";
+            Text = "}";
             ((System.ComponentModel.ISupportInitialize)gridIter).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -246,5 +279,8 @@
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
+        private Button btnNewton;
+        private Button btnSecante;
+        private Button btnMostrarMetodos;
     }
 }

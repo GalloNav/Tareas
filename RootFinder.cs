@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic;
 
 
 namespace Bisección_y_Regla_Falsa
@@ -125,5 +126,102 @@ namespace Bisección_y_Regla_Falsa
 
             return xr;
         }
+
+        public double NewtonRaphson(Func<double, double> f, Func<double, double> df,
+                            double x0, double eamaxPercent, int iterMax = 100)
+        {
+            Tabla.Clear();
+            Iteraciones = 0;
+
+            double xPrev = x0;
+            double xCurr = xPrev;          // solo para inicializar
+            double xrold = xPrev;
+            double ea = double.PositiveInfinity;
+
+            for (int i = 1; i <= iterMax; i++)
+            {
+                xrold = xPrev;
+
+                double d = df(xPrev);
+                if (Math.Abs(d) < 1e-12)
+                    throw new Exception("Derivada muy cercana a cero; Newton se detiene.");
+
+                xCurr = xPrev - f(xPrev) / d;
+
+                if (i > 1 && xCurr != 0.0)
+                    ea = Math.Abs((xCurr - xrold) / xCurr) * 100.0;
+
+                Iteraciones = i;
+
+                // f(xi)=f(xPrev), f(xf)=NaN, f(xr)=f(xCurr)
+                Tabla.Add((
+                    i: i,
+                    xi: xPrev,
+                    xf: double.NaN,
+                    xr: xCurr,
+                    fxi: f(xPrev),
+                    fxf: double.NaN,
+                    fxr: f(xCurr),
+                    ea: (i > 1 ? ea : double.NaN)
+                ));
+
+                if ((i > 1 && ea <= eamaxPercent) || f(xCurr) == 0.0)
+                    break;
+
+                xPrev = xCurr;
+            }
+
+            return xCurr;
+        }
+
+
+        public double Secante(Func<double, double> f, double x0, double x1,
+                      double eamaxPercent, int iterMax = 100)
+        {
+            Tabla.Clear();
+            Iteraciones = 0;
+
+            double xPrev = x0;
+            double xCurr = x1;
+            double xNext = xCurr;
+            double ea = double.PositiveInfinity;
+
+            for (int i = 1; i <= iterMax; i++)
+            {
+                double fxPrev = f(xPrev);
+                double fxCurr = f(xCurr);
+                double denom = fxCurr - fxPrev;
+
+                if (Math.Abs(denom) < 1e-12)
+                    throw new Exception("División por valor muy pequeño en Secante.");
+
+                xNext = xCurr - fxCurr * (xCurr - xPrev) / denom;
+
+                if (xNext != 0.0)
+                    ea = Math.Abs((xNext - xCurr) / xNext) * 100.0;
+
+                Iteraciones = i;
+
+                Tabla.Add((
+                    i: i,
+                    xi: xPrev,
+                    xf: xCurr,
+                    xr: xNext,
+                    fxi: fxPrev,
+                    fxf: fxCurr,
+                    fxr: f(xNext),
+                    ea: ea
+                ));
+
+                if (ea <= eamaxPercent || f(xNext) == 0.0)
+                    break;
+
+                xPrev = xCurr;
+                xCurr = xNext;
+            }
+
+            return xNext;
+        }
+
     }
 }
