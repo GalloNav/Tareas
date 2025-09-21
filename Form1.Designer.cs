@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             btnLimpiar = new Button();
             lblFuncion = new Label();
             lblXi = new Label();
@@ -249,12 +250,13 @@
             Controls.Add(btnBiseccion);
             Controls.Add(btnReglaFalsa);
             Controls.Add(btnLimpiar);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MinimizeBox = false;
             MinimumSize = new Size(900, 600);
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "}";
+            Text = "Raices (Biseccion, Regla Falsa, Newton, Secante)";
             ((System.ComponentModel.ISupportInitialize)gridIter).EndInit();
             ResumeLayout(false);
             PerformLayout();
