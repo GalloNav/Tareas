@@ -167,6 +167,7 @@ namespace Bisección_y_Regla_Falsa
         }
 
         private bool ValidarEntradas(out double xi, out double xf, out double eamax)
+
         {
             xi = xf = eamax = 0;
 
